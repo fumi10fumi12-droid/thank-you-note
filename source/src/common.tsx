@@ -52,3 +52,27 @@ window.setInterval(checkThankfulDates,500);
 function removeHeroPeriod(){document.querySelectorAll('.hero h1 em').forEach(element=>{if(element.textContent==='いつまでも記憶に。')element.textContent='いつまでも記憶に';});}
 removeHeroPeriod();
 window.setInterval(removeHeroPeriod,500);
+let previewBypass=false;
+function showRecordPreview(button:HTMLElement){
+ const heading=button.querySelector('h3')?.textContent||'ありがとうの記録';
+ const date=button.querySelector('time')?.textContent||'';
+ const excerpt=button.querySelector('.excerpt')?.textContent||'';
+ const badge=button.querySelector('.badge')?.textContent?.trim()||'';
+ const modal=document.createElement('div');
+ modal.className='record-preview';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+ modal.innerHTML=`<div class="record-preview-card"><button class="record-preview-close" type="button" aria-label="閉じる">×</button><span class="eyebrow">GRATITUDE MEMORY</span><h2>${heading}</h2><time>${date}</time><p class="record-preview-text">${excerpt.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</p><span class="record-preview-badge">${badge}</span><div class="record-preview-actions"><button class="secondary record-preview-edit" type="button">編集する</button><button class="plain record-preview-cancel" type="button">閉じる</button></div></div>`;
+ const close=()=>modal.remove();
+ modal.querySelector('.record-preview-close')?.addEventListener('click',close);
+ modal.querySelector('.record-preview-cancel')?.addEventListener('click',close);
+ modal.querySelector('.record-preview-edit')?.addEventListener('click',()=>{close();previewBypass=true;button.click();});
+ modal.addEventListener('click',event=>{if(event.target===modal)close();});
+ document.body.appendChild(modal);
+ (modal.querySelector('.record-preview-edit') as HTMLButtonElement)?.focus();
+}
+document.addEventListener('click',event=>{
+ if(previewBypass){previewBypass=false;return;}
+ const target=event.target as HTMLElement;
+ const button=target.closest('button.record') as HTMLButtonElement|null;
+ if(!button)return;
+ event.preventDefault();event.stopPropagation();showRecordPreview(button);
+},true);
