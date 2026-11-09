@@ -1,6 +1,7 @@
 [build]
   command = "cd source && npm ci && npm run build:standalone && cd .. && mkdir -p _site/images && cp index.html _site/index.html && cp images/connection-hero.jpg _site/images/connection-hero.jpg && touch _site/.nojekyll"
   publish = "_site"
+  ignore = "false"
 
 [build.environment]
   NODE_VERSION = "22"
