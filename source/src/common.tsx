@@ -53,15 +53,17 @@ function removeHeroPeriod(){document.querySelectorAll('.hero h1 em').forEach(ele
 removeHeroPeriod();
 window.setInterval(removeHeroPeriod,500);
 let previewBypass=false;
-function showRecordPreview(button:HTMLElement){
- const heading=button.querySelector('h3')?.textContent||'ありがとうの記録';
- const date=button.querySelector('time')?.textContent||'';
- const excerpt=button.querySelector('.excerpt')?.textContent||'';
- const badge=button.querySelector('.badge')?.textContent?.trim()||'';
+function previewText(value:unknown,fallback='入力なし'){const text=String(value??'').trim();return text||fallback;}
+function getPreviewRecord(button:HTMLElement){return new Promise<Record<string,string>|null>(resolve=>{try{const request=indexedDB.open('thank-you-db');request.onsuccess=()=>{const database=request.result;if(!database.objectStoreNames.contains('records')){database.close();resolve(null);return;}const get=database.transaction('records','readonly').objectStore('records').getAll();get.onsuccess=()=>{const heading=button.querySelector('h3')?.textContent?.replace(/へ$/,'')||'';const date=button.querySelector('time')?.textContent?.replaceAll('.','-')||'';const excerpt=button.querySelector('.excerpt')?.textContent||'';const record=(get.result as Record<string,string>[]).find(item=>item.personName===heading&&(item.eventDate===date||item.whatHappened===excerpt))||null;database.close();resolve(record);};};request.onerror=()=>resolve(null);}catch{resolve(null);}});}
+async function showRecordPreview(button:HTMLElement){
+ const fallback={personName:button.querySelector('h3')?.textContent?.replace(/へ$/,'')||'ありがとうの記録',eventDate:button.querySelector('time')?.textContent?.replaceAll('.','-')||'',whatHappened:button.querySelector('.excerpt')?.textContent||'',status:button.querySelector('.badge')?.textContent?.trim()||''};
+ const record={...fallback,...(await getPreviewRecord(button)||{})};
+ const field=(label:string,value:unknown)=>`<div class="record-preview-field"><dt>${label}</dt><dd>${previewText(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</dd></div>`;
  const modal=document.createElement('div');
  modal.className='record-preview';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
- modal.innerHTML=`<div class="record-preview-card"><button class="record-preview-close" type="button" aria-label="閉じる">×</button><span class="eyebrow">GRATITUDE MEMORY</span><h2>${heading}</h2><time>${date}</time><p class="record-preview-text">${excerpt.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</p><span class="record-preview-badge">${badge}</span><div class="record-preview-actions"><button class="secondary record-preview-edit" type="button">編集する</button><button class="plain record-preview-cancel" type="button">閉じる</button></div></div>`;
- const close=()=>modal.remove();
+ modal.innerHTML=`<div class="record-preview-card"><button class="record-preview-close" type="button" aria-label="閉じる">×</button><span class="eyebrow">GRATITUDE MEMORY</span><h2>${previewText(record.personName,'ありがとうの記録')}へ</h2><dl class="record-preview-fields">${field('誰に感謝したい？',record.personName)}${field('何をしてもらった？',record.whatHappened)}${field('どんな気持ちになった？',record.feeling)}${field('いつの出来事？',record.eventDate)}${field('特に伝えたいこと',record.personalNote)}${field('文章の雰囲気',record.tone)}${field('作成したお礼の文章',record.generatedMessage)}${field('編集後のお礼の文章',record.editedMessage)}${field('お礼の状態',record.status)}</dl><div class="record-preview-actions"><button class="secondary record-preview-edit" type="button">編集する</button><button class="plain record-preview-cancel" type="button">閉じる</button></div></div>`;
+ document.body.classList.add('preview-open');
+ const close=()=>{modal.remove();document.body.classList.remove('preview-open');};
  modal.querySelector('.record-preview-close')?.addEventListener('click',close);
  modal.querySelector('.record-preview-cancel')?.addEventListener('click',close);
  modal.querySelector('.record-preview-edit')?.addEventListener('click',()=>{close();previewBypass=true;button.click();});
