@@ -1,0 +1,3 @@
+import React from 'react';import{createRoot}from'react-dom/client';import App from './App';import './style.css';import{registerSW}from'virtual:pwa-register';
+const update=registerSW({onNeedRefresh(){if(confirm('新しいバージョンがあります。再読み込みしますか？保存済みの記録は保持されます。'))void update(true)},onRegisterError(){window.dispatchEvent(new CustomEvent('app-notice',{detail:'オフライン用の準備に失敗しました。接続を確認して再読み込みしてください。'}))}});
+createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);

@@ -1,0 +1,38 @@
+# Dependencies and local tooling
+node_modules/
+.npm/
+.cache/
+.vite/
+
+# Build and coverage output
+dist/
+coverage/
+*.tsbuildinfo
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+
+# Personal notes, saved records, and backups
+はじめに.txt
+*.bak
+*.backup
+*.old
+*.orig
+backups/
+backup/
+data/
+records/
+private/
+
+# macOS / editor files
+.DS_Store
+.vscode/
+.idea/

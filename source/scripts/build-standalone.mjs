@@ -1,0 +1,14 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,readdir} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const result=await build({stdin:{contents:"import React from 'react';import{createRoot}from'react-dom/client';import App from './src/App';createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);",resolveDir:root,loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',minify:true,define:{'process.env.NODE_ENV':'"production"'}});
+const cssFiles=(await readdir(path.join(root,'dist/assets'))).filter(f=>f.endsWith('.css'));
+if(!cssFiles.length)throw Error('先に npm run build を実行してください');
+const css=(await Promise.all(cssFiles.map(f=>readFile(path.join(root,'dist/assets',f),'utf8')))).join('\n');
+const js=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
+const title=JSON.parse(await readFile(path.join(root,'standalone.json'),'utf8')).title;
+const html=`<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title}</title><style>${css.replace(/<\/style/gi,'<\\/style')}</style></head><body><div id="root"></div><script>${js}</script></body></html>`;
+await writeFile(path.join(root,'../index.html'),html);
+console.log('更新しました：../index.html（ダブルクリックで開けます）');
