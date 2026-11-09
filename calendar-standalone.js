@@ -15,3 +15,11 @@
   function boot(){const req=indexedDB.open('thank-you-db');req.onsuccess=()=>{const db=req.result;const tx=db.transaction('records','readonly');const get=tx.objectStore('records').getAll();get.onsuccess=()=>mount(get.result||[])};}
   setTimeout(boot,300);
 })();
+
+(()=>{
+  let knownDates=null,audioArmedUntil=0;
+  document.addEventListener('pointerdown',()=>{audioArmedUntil=Date.now()+3000},{passive:true});
+  function playPing(){try{const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;const context=new AudioContextClass(),start=context.currentTime;[{at:0,frequency:1046.5},{at:.17,frequency:1318.5}].forEach(({at,frequency})=>{const oscillator=context.createOscillator(),gain=context.createGain();oscillator.type='sine';oscillator.frequency.setValueAtTime(frequency,start+at);gain.gain.setValueAtTime(.0001,start+at);gain.gain.exponentialRampToValueAtTime(.16,start+at+.02);gain.gain.exponentialRampToValueAtTime(.0001,start+at+.42);oscillator.connect(gain).connect(context.destination);oscillator.start(start+at);oscillator.stop(start+at+.44)});setTimeout(()=>context.close(),700)}catch{}}
+  function poll(){try{const request=indexedDB.open('thank-you-db');request.onsuccess=()=>{const database=request.result;if(!database.objectStoreNames.contains('records')){database.close();return}const get=database.transaction('records','readonly').objectStore('records').getAll();get.onsuccess=()=>{const dates=new Set((get.result||[]).map(record=>record.eventDate));if(knownDates&&[...dates].some(date=>!knownDates.has(date))&&Date.now()<audioArmedUntil)playPing();knownDates=dates;database.close()}}}catch{}}
+  poll();setInterval(poll,500);
+})();
