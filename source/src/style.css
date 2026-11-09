@@ -23,6 +23,20 @@
 .hero{background-image:linear-gradient(90deg,#203448dc 0%,#203448a8 42%,#20344828 78%),url('./images/connection-hero.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;color:#fff}.hero .eyebrow,.hero h1,.hero h1 em,.hero p{color:#fff}.hero .primary{background:#fff;color:var(--deep);border-color:#fff}.hero-art{display:none}
 @media(max-width:760px){.hero{min-height:420px;padding:29px 24px 32px;background-position:center}.hero h1{max-width:100%;font-size:30px}.hero p{max-width:100%}}
 
+/* 紅梅の余韻 — ありがとうを静かに残せる、薄紅色のUIテーマ */
+:root{color:#4c3d43;background:#fcf8f7}
+body{background:radial-gradient(circle at 90% 0%,#f8e9eb 0,transparent 30%),#fcf8f7}
+.app{--deep:#744d5b;--accent:#bd7b88;--wash:#f6e5e8}
+header{background:#fffaf9;border-color:#eedfe1;box-shadow:0 3px 18px #744d5b09}
+.brand strong{color:#513c45}.brand .eyebrow{color:#9d6674}.brand-mark{background:linear-gradient(145deg,#8c5a68,#6d4653);box-shadow:0 8px 18px #8c5a6838}
+aside{background:#fffaf9;border-color:#eedfe1}.side-caption{color:#a27782}aside nav button{color:#796a70}aside nav button:hover{background:#fbedef;color:#744d5b}aside nav .selected{background:#744d5b;box-shadow:0 8px 20px #744d5b26}.aside-note{background:#f8e9eb;color:#795966}.aside-note strong,.aside-note p{color:#795966}
+main{color:#4c3d43}.hero{background-image:linear-gradient(90deg,#704758e8 0%,#8d6071ba 45%,#a7778733 90%),url('./images/connection-hero.jpg');box-shadow:0 16px 40px #744d5b18;border-color:#e8cdd2}.hero h1{color:#fff}.hero h1 em{color:#fff}.hero p{color:#fff}.hero .eyebrow{color:#ffe8ec}.hero .primary{background:#fffaf9;color:#744d5b;border-color:#fffaf9;box-shadow:0 8px 20px #3c202a35}.hero .primary:hover{background:#fff;color:#633e4b}
+.journey div{color:#806a72}.journey b{border-color:#e7cfd3;color:#8c5968;background:#fffaf9}.stats{background:#fffdfc;border-color:#f0e1e2;box-shadow:0 8px 28px #744d5b0b}.stat{border-color:#f0e1e2}.stat strong{color:#744d5b}.stat span{color:#866f76}.section-title h2{color:#523d46}.section-title p{color:#8b767b}
+.primary{background:#744d5b;border-color:#744d5b;box-shadow:0 7px 16px #744d5b22}.primary:hover{background:#623e4b}.secondary{background:#fffdfc;border-color:#e8cfd3;color:#744d5b}.secondary:hover{background:#fdf0f2}.plain{color:#89636e}.empty{background:#fffdfc;border-color:#ead9dc;box-shadow:0 8px 28px #744d5b08}.empty-symbol{background:#f8e6e9;color:#9e6372}.record{background:#fffdfc;border-color:#eddddf;box-shadow:0 6px 22px #744d5b08}.record:hover{border-color:#bd7b88;box-shadow:0 12px 26px #744d5b14}.record h3{color:#573f48}.record p{color:#78666d}.badge{background:#f8e7ea;color:#8d5967}
+.form-panel,dialog{background:#fffdfc;border-color:#eadcdf;box-shadow:0 14px 45px #744d5b0b}.form-head h1,.dialog-heading h2{color:#573f48}.field>span{color:#634a54}input:not([type=checkbox]):not([type=file]),select,textarea{background:#fffafa;border-color:#e5cfd3;color:#4c3d43}input:focus,select:focus,textarea:focus{border-color:#bd7b88;box-shadow:0 0 0 4px #bd7b881c}.privacy,.helper{background:#f8e8ea;border-left-color:#bd7b88;color:#765963}.privacy p,.helper p{color:#765963}.error{background:#fff0ef;border-color:#edc9c8;color:#9a514f}.toast{background:#744d5b;box-shadow:0 12px 30px #744d5b35}
+.gratitude-calendar{background:#fffdfc;border-color:#eddcdf;box-shadow:0 8px 26px #744d5b09}.calendar-heading h2,.calendar-toolbar,.calendar-rate strong,.calendar-summary strong{color:#744d5b}.calendar-heading p,.calendar-rate span,.calendar-summary{color:#8a737a}.calendar-arrow{background:#fffafa;border-color:#e7cfd3;color:#744d5b}.calendar-day{color:#806a72}.calendar-day.is-recorded{background:#f8e3e7;color:#744d5b;box-shadow:inset 0 0 0 1px #ebc8ce}.calendar-legend-heart{color:#bd7b88}
+footer{border-color:#efdedf;color:#9a7b84}.little-dot{background:#bd7b88}
+
 /* Premium icon system — precise strokes, quiet depth, and consistent touch targets */
 .app svg{stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 .app button svg,.app a svg,.app .aside-note>svg,.app .privacy>svg{stroke-width:1.75;flex:0 0 auto}
