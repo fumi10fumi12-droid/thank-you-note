@@ -49,3 +49,6 @@ function playThankfulPing(){try{const AudioContextClass=window.AudioContext||((w
 function checkThankfulDates(){try{const request=indexedDB.open('thank-you-db');request.onsuccess=()=>{const database=request.result;if(!database.objectStoreNames.contains('records')){database.close();return;}const get=database.transaction('records','readonly').objectStore('records').getAll();get.onsuccess=()=>{const dates=new Set((get.result as {eventDate:string}[]).map(record=>record.eventDate));if(knownThankfulDates&&[...dates].some(date=>!knownThankfulDates?.has(date))&&Date.now()<audioArmedUntil)playThankfulPing();knownThankfulDates=dates;database.close();};};}catch{}}
 checkThankfulDates();
 window.setInterval(checkThankfulDates,500);
+function removeHeroPeriod(){document.querySelectorAll('.hero h1 em').forEach(element=>{if(element.textContent==='いつまでも記憶に。')element.textContent='いつまでも記憶に';});}
+removeHeroPeriod();
+window.setInterval(removeHeroPeriod,500);
