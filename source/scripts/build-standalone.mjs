@@ -9,6 +9,7 @@ if(!cssFiles.length)throw Error('先に npm run build を実行してくださ�
 const css=(await Promise.all(cssFiles.map(f=>readFile(path.join(root,'dist/assets',f),'utf8')))).join('\n');
 const js=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');
 const title=JSON.parse(await readFile(path.join(root,'standalone.json'),'utf8')).title;
-const html=`<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title}</title><style>${css.replace(/<\/style/gi,'<\\/style')}</style></head><body><div id="root"></div><script>${js}</script></body></html>`;
+const favicon="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23a05a6e'/%3E%3Cstop offset='100%25' stop-color='%235c2e3c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Cpath d='M16 25l-1.5-1.4C8 18 4 14.5 4 10 4 6.5 6.5 4 10 4c2 0 3.8 1 4.8 2.5C15.8 5 17.6 4 19.6 4 23 4 25.5 6.5 25.5 10c0 4.5-4 8-10.5 13.6L16 25z' fill='%23ffd6e0'/%3E%3Ccircle cx='21' cy='9' r='1.2' fill='%23ffffff'/%3E%3C/svg%3E";
+const html=`<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${title}</title><link rel="icon" type="image/svg+xml" href="${favicon}"><style>${css.replace(/<\/style/gi,'<\\/style')}</style></head><body><div id="root"></div><script>${js}</script></body></html>`;
 await writeFile(path.join(root,'../index.html'),html);
 console.log('更新しました：../index.html（ダブルクリックで開けます）');

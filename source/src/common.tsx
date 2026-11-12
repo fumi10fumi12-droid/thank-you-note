@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import Dexie,{type Table} from 'dexie';
 import {z} from 'zod';
-import {Settings,Plus,ArrowUpRight,Download,Upload,Trash2,X,ShieldCheck,ArrowLeft,Check,Home,BookOpen,BarChart3,ListChecks,Compass} from 'lucide-react';
+import {Settings,Plus,ArrowUpRight,Download,Upload,Trash2,X,ShieldCheck,ArrowLeft,Check,Sparkles,HeartHandshake,ScrollText,BookOpen} from 'lucide-react';
 export const today=()=>new Date().toLocaleDateString('sv-SE');
 export const now=()=>new Date().toISOString();
 export const id=()=>crypto.randomUUID();
@@ -28,8 +28,28 @@ export function Empty({title,description,onAdd}:{title:string;description:string
 export function Stat({value,label}:{value:ReactNode;label:string}){return <div className="stat"><strong>{value}</strong><span>{label}</span></div>;}
 export function Badge({children}:{children:ReactNode}){return <span className="badge">{children}</span>;}
 export function Delete({onDelete}:{onDelete:()=>void}){return <button type="button" className="danger plain" onClick={()=>{if(confirm('この記録を削除しますか？元に戻せません。'))onDelete();}}><Trash2 size={16}/>この記録を削除</button>;}
-const icons=[Home,Plus,BarChart3];
-export function Shell<T extends {id:string}>({appId,title,english,accent,mark,tabs,tab,onTab,children,records,schema,onRestore,onClear,notice,setNotice,busy=false}: {appId:string;title:string;english:string;accent:string;mark:string;tabs:string[];tab:number;onTab:(n:number)=>void;children:ReactNode;records:T[];schema:z.ZodType<T,z.ZodTypeDef,unknown>;onRestore:(r:T[])=>Promise<boolean>;onClear:()=>Promise<boolean>;notice:string;setNotice:(s:string)=>void;busy?:boolean}){
+export function BrandIcon({size=24}:{size?:number}){
+ return (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="brand-svg" aria-hidden="true">
+   <defs>
+    <linearGradient id="brandGold" x1="0%" y1="0%" x2="100%" y2="100%">
+     <stop offset="0%" stopColor="#fff9fa"/>
+     <stop offset="50%" stopColor="#ffd2dc"/>
+     <stop offset="100%" stopColor="#f39cb0"/>
+    </linearGradient>
+    <filter id="brandGlow" x="-20%" y="-20%" width="140%" height="140%">
+     <feDropShadow dx="0" dy="1" stdDeviation="1.2" floodColor="#ffd5de" floodOpacity="0.7"/>
+    </filter>
+   </defs>
+   <circle cx="12" cy="12" r="10.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1" strokeDasharray="2 2"/>
+   <path d="M12 20.35l-1.45-1.32C5.4 14.36 2 11.28 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.78-3.4 6.86-8.55 11.54L12 20.35z" fill="url(#brandGold)" filter="url(#brandGlow)"/>
+   <path d="M12 5.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" fill="#ffffff" opacity="0.95"/>
+   <circle cx="17.5" cy="6.5" r="0.9" fill="#ffffff" opacity="0.9"/>
+  </svg>
+ );
+}
+const icons=[Sparkles,HeartHandshake,ScrollText];
+export function Shell<T extends {id:string}>({appId,title,english,accent,mark,tabs,tab,onTab,children,records,schema,onRestore,onClear,notice,setNotice,busy=false}: {appId:string;title:string;english:string;accent:string;mark:ReactNode;tabs:string[];tab:number;onTab:(n:number)=>void;children:ReactNode;records:T[];schema:z.ZodType<T,z.ZodTypeDef,unknown>;onRestore:(r:T[])=>Promise<boolean>;onClear:()=>Promise<boolean>;notice:string;setNotice:(s:string)=>void;busy?:boolean}){
  const [settings,setSettings]=useState(false),[pending,setPending]=useState<T[]|null>(null),[online,setOnline]=useState(navigator.onLine);const dialog=useRef<HTMLDialogElement>(null),focusRef=useRef<HTMLButtonElement>(null),first=useRef<HTMLButtonElement>(null);
  useEffect(()=>{const f=()=>setOnline(navigator.onLine),n=(e:Event)=>setNotice((e as CustomEvent<string>).detail);window.addEventListener('online',f);window.addEventListener('offline',f);window.addEventListener('app-notice',n);return()=>{window.removeEventListener('online',f);window.removeEventListener('offline',f);window.removeEventListener('app-notice',n);}},[]);
  useEffect(()=>{if(!notice)return;const t=setTimeout(()=>setNotice(''),7000);return()=>clearTimeout(t);},[notice]);
@@ -44,14 +64,8 @@ export function FormHead({title,onBack}:{title:string;onBack:()=>void}){return <
 
 let knownThankfulDates:Set<string>|null=null;
 let audioArmedUntil=0;
-document.addEventListener('pointerdown',()=>{audioArmedUntil=Date.now()+3000;},{passive:true});
 function playThankfulPing(){try{const AudioContextClass=window.AudioContext||((window as unknown as {webkitAudioContext?:typeof AudioContext}).webkitAudioContext);if(!AudioContextClass)return;const context=new AudioContextClass(),start=context.currentTime;[{at:0,frequency:1046.5},{at:.17,frequency:1318.5}].forEach(({at,frequency})=>{const oscillator=context.createOscillator(),gain=context.createGain();oscillator.type='sine';oscillator.frequency.setValueAtTime(frequency,start+at);gain.gain.setValueAtTime(.0001,start+at);gain.gain.exponentialRampToValueAtTime(.16,start+at+.02);gain.gain.exponentialRampToValueAtTime(.0001,start+at+.42);oscillator.connect(gain).connect(context.destination);oscillator.start(start+at);oscillator.stop(start+at+.44);});setTimeout(()=>void context.close(),700);}catch{}}
 function checkThankfulDates(){try{const request=indexedDB.open('thank-you-db');request.onsuccess=()=>{const database=request.result;if(!database.objectStoreNames.contains('records')){database.close();return;}const get=database.transaction('records','readonly').objectStore('records').getAll();get.onsuccess=()=>{const dates=new Set((get.result as {eventDate:string}[]).map(record=>record.eventDate));if(knownThankfulDates&&[...dates].some(date=>!knownThankfulDates?.has(date))&&Date.now()<audioArmedUntil)playThankfulPing();knownThankfulDates=dates;database.close();};};}catch{}}
-checkThankfulDates();
-window.setInterval(checkThankfulDates,500);
-function removeHeroPeriod(){document.querySelectorAll('.hero h1 em').forEach(element=>{if(element.textContent==='いつまでも記憶に。')element.textContent='いつまでも記憶に';});}
-removeHeroPeriod();
-window.setInterval(removeHeroPeriod,500);
 let previewBypass=false;
 function previewText(value:unknown,fallback='入力なし'){const text=String(value??'').trim();return text||fallback;}
 function getPreviewRecord(button:HTMLElement){return new Promise<Record<string,string>|null>(resolve=>{try{const request=indexedDB.open('thank-you-db');request.onsuccess=()=>{const database=request.result;if(!database.objectStoreNames.contains('records')){database.close();resolve(null);return;}const get=database.transaction('records','readonly').objectStore('records').getAll();get.onsuccess=()=>{const heading=button.querySelector('h3')?.textContent?.replace(/へ$/,'')||'';const date=button.querySelector('time')?.textContent?.replaceAll('.','-')||'';const excerpt=button.querySelector('.excerpt')?.textContent||'';const record=(get.result as Record<string,string>[]).find(item=>item.personName===heading&&(item.eventDate===date||item.whatHappened===excerpt))||null;database.close();resolve(record);};};request.onerror=()=>resolve(null);}catch{resolve(null);}});}
@@ -71,10 +85,16 @@ async function showRecordPreview(button:HTMLElement){
  document.body.appendChild(modal);
  (modal.querySelector('.record-preview-edit') as HTMLButtonElement)?.focus();
 }
-document.addEventListener('click',event=>{
- if(previewBypass){previewBypass=false;return;}
- const target=event.target as HTMLElement;
- const button=target.closest('button.record') as HTMLButtonElement|null;
- if(!button)return;
- event.preventDefault();event.stopPropagation();showRecordPreview(button);
-},true);
+
+if(typeof window!=='undefined'&&typeof document!=='undefined'){
+ document.addEventListener('pointerdown',()=>{audioArmedUntil=Date.now()+3000;},{passive:true});
+ checkThankfulDates();
+ window.setInterval(checkThankfulDates,500);
+ document.addEventListener('click',event=>{
+  if(previewBypass){previewBypass=false;return;}
+  const target=event.target as HTMLElement;
+  const button=target.closest('button.record') as HTMLButtonElement|null;
+  if(!button)return;
+  event.preventDefault();event.stopPropagation();showRecordPreview(button);
+ },true);
+}
