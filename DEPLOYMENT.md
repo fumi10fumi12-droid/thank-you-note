@@ -10,4 +10,10 @@
 - ビルド設定: `netlify.toml`
 
 GitHubの`main`へpushすると、既存のNetlifyサイトが自動ビルド・再公開する。
-公開状態やNetlify側の設定は、実際に確認できた情報だけをこのメモへ記録する。
+
+## GitHub Pages
+
+- 公開先: https://fumi10fumi12-droid.github.io/thank-you-note/
+- ワークフロー: `.github/workflows/pages.yml`
+- デプロイ方式: GitHub Actions
+- 設定要件: リポジトリの Settings > Pages > Source を「GitHub Actions」に設定
